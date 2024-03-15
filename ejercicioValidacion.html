@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <style>
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        input[type="text"], select{
+            width: 500px;
+        }
+
+        .warnings{
+            width: 200px;
+            color: red;
+            padding-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <form action="" id="form">
+
+        <h1>Formulario</h1>
+
+        <p>
+            <label for="nombre">Nombre:</label><br>
+            <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre">
+        </p>
+
+        <p>
+            <label for="apellidos">Apellidos:</label><br>
+            <input type="text" name="apellidos" id="apellidos" placeholder="Ingrese sus apellidos">
+        </p>
+
+        <p>
+            <label for="edad">Edad:</label><br>
+            <input type="text" name="edad" id="edad" placeholder="Ingrese su edad" onchange="checkEdad()">
+        </p>
+
+        <p>
+            <label for="sexo">Sexo:</label>
+            <input type="radio" name="sexo" id="masculino" onchange="seleccionSexo()">
+            <label for="masculino">Masculino</label>
+            <input type="radio" name="sexo" id="femenino" onchange="seleccionSexo()">
+            <label for="femenino">Femenino</label>
+        </p>
+
+        <p>
+            <div style="display: none;" id="opcionHombre">
+                <label for="situacion">Situación familiar:</label><br>
+                <select name="situacion" id="situacionH">
+                    <option value="opcion" hidden>Selecciona una opción</option>
+                    <option value="soltero">Soltero</option>
+                    <option value="casado">Casado</option>
+                    <option value="divorciado">Divorciado</option>
+                    <option value="viudo">Viudo</option>
+                </select>  
+            </div>
+            <div style="display: none;" id="opcionMujer">
+                <label for="situacion">Situación familiar:</label><br>
+                <select name="situacion" id="situacionF">
+                    <option value="opcion" hidden>Selecciona una opción</option>
+                    <option value="soltera">Soltera</option>
+                    <option value="casada">Casada</option>
+                    <option value="divorciada">Divorciada</option>
+                    <option value="viuda">Viuda</option>
+                </select>   
+            </div>
+        </p>
+
+        <p>
+            <label for="email">Email:</label><br>
+            <input type="text" name="email" id="email" placeholder="Ingrese su correo electrónico">
+        </p>
+        <p>
+            <label for="tel">Teléfono:</label><br>
+            <input type="text" name="tel" id="tel" placeholder="Ingrese su número de teléfono">
+        </p>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+    
+    <div class="warnings" id="warnings"></div>
+
+
+    <script>
+
+        function seleccionSexo(){
+            const masculino = document.getElementById("masculino").checked;
+            document.getElementById("opcionHombre").style.display = masculino ? "block" : "none";
+            document.getElementById("opcionMujer").style.display = masculino ? "none" : "block";    
+        }
+
+        function checkNombre(nombre) {
+            return /^[A-Z][a-z]*$/.test(nombre);
+        }
+
+        function checkApellidos(apellidos) {
+            const partesApellidos = apellidos.split(' ');
+            if (partesApellidos.length !== 2) {
+                return false;
+            }
+            for (let apellido of partesApellidos) {
+                if (!/^[A-Z][a-z]*$/.test(apellido)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function checkTelefono(tel){
+            let numeros = tel.split('');
+            for(let numero of numeros){
+                if(isNaN(numero) && numero !== ' '){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        const form = document.getElementById('form');
+        const parrafo = document.getElementById('warnings');
+
+        form.addEventListener("submit", e=> {
+            e.preventDefault();
+            let nombre = document.getElementById('nombre').value;
+            let apellidos = document.getElementById('apellidos').value;
+            let edad = document.getElementById('edad').value;
+            let email = document.getElementById('email').value;
+            let tel = document.getElementById('tel').value;
+            let warnings = "";
+            let verificarEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            let entrar = false;
+            parrafo.innerHTML = '';
+
+            if(!checkNombre(nombre)){
+                warnings += `El nombre no es válido <br>`;
+                entrar = true;
+            }
+
+            if(!checkApellidos(apellidos)){
+                warnings += `Los apellidos no son válidos <br>`;
+                entrar = true;
+            }
+
+            if(edad<18){
+                warnings += `Debes ser mayor de edad <br>`;
+                entrar = true;
+            }
+
+            if(!verificarEmail.test(email)){
+                warnings += `El email no es válido <br>`;
+                entrar = true;
+            }
+
+            if(!checkTelefono(tel)){
+                warnings += `El teléfono no es válido <br>`;
+                entrar = true;
+            }
+
+            if(entrar){
+                parrafo.innerHTML = warnings;
+            }else{
+                parrafo.innerHTML = "Enviado";
+            }
+
+        })
+
+    </script>
+    
+</body>
+</html>
